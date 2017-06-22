@@ -1,0 +1,39 @@
+<html lang="en" dir="ltr">
+<head>
+
+<title>Example powerful flask</title>
+<meta charset="iso-8859-1">
+</head>
+
+
+<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='bubblestyle.css') }}" >
+<link rel="stylesheet" type="text/css" href= "{{ url_for('static', filename='layout.css') }}" >
+
+
+<body>
+<header id="header">
+        <!-- <div class="BigSpacer"></div> -->
+        <div class="horizontal">
+          <nav >
+            <ul>
+              <li><a href="{{ url_for('bubbleChart') }}">Bubble</a></li>
+              <li><a href="{{ url_for('network') }}">Network</a></li>
+
+            </ul>
+          </nav>
+        </div>
+</header>
+
+<script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+
+<div id ="container">
+<div id ="content"></div>
+
+{% block content %}
+{% endblock %}
+</div>
+
+<footer id="footer">
+  <p> Visualisation of Biological Data - Assignment 6 - Caspar Gross </p>
+</footer>
+</body>

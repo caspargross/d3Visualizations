@@ -1,0 +1,29 @@
+.mySVG {
+    font-family: sans-serif;
+    font-size: 10px;
+    text-anchor: middle;
+}
+
+.circle{
+    opacity: .5;
+    stroke: darkgrey;
+}
+
+.circle:hover{
+    opacity: .9;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;}
+
+.legendordinal {
+    background-color: #fff;
+    width: 200px;
+    height: 300px;
+    border: 1px solid #bbb;
+    margin: 10px;
+    float: left;
+}

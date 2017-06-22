@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{%  block content %}
+
+<script>
+    var margin = {top: 20, right: 20, bottom: 60, left: 50},
+        mySvgHeight = 800,
+        mySvgWidth = 1000,
+        width = mySvgWidth - margin.left - margin.right,
+        height = mySvgHeight - margin.top - margin.bottom;
+
+    // Initialize scale variables
+        var xScale;
+        var yScale;
+        var areaScale;
+        var colorScale;
+
+    // Choose order to plot
+    //var MY_ORDER = "Carnivora";
+    //var orderField = document.getElementById('order');
+    //orderField.innerHTML = MY_ORDER;
+
+        // Create svg element and add to content section of main html
+    var svg = d3.select('#content').append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Main function to create svg object with bubble Graph
+    var drawBubbles = function(dat, svg) {
+
+        // Clear existing svg
+        svg.selectAll("g").remove();
+
+        // Define scales
+        xScale = d3.scaleLinear()
+            .range([0, width])
+            .domain([0,	d3.max(dat, function(d) {return d.mass_g})]);
+
+        yScale = d3.scaleLinear()
+            .range([height,	0])
+            .domain([0,	d3.max(dat, function(d) {return d.newborn_g})]);
+
+        areaScale = d3.scaleLinear()
+            .range([50, 1000])
+            .domain([d3.min(dat, function(d) {return d.gestation_mo}),
+                d3.max(dat, function(d) {return d.gestation_mo})]);
+
+        colorScale = d3.scaleOrdinal(d3.schemeCategory20c);
+
+        // Add the X Axis
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(xScale));
+
+        // Add the Y Axis
+        svg.append("g")
+            .attr("class", "axis")
+            .call(d3.axisLeft(yScale));
+
+        // text label for the x axis
+        svg.append("text")
+            .attr("transform",
+                "translate(" + (width/2) + " ," +
+                (height + margin.top + 20) + ")")
+            .style("text-anchor", "middle")
+            .text("Parent weight (g)");
+
+        // text label for the y axis
+        svg.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - margin.left)
+            .attr("x",0 - (height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text("Newborn Child weight (g)");
+
+
+        // Setup circles
+        var bubbles = svg.append("g")
+            .selectAll(".bubble")
+            .data(dat)
+            .enter()
+                .append("circle")
+                .attr("r", function(k) { return Math.sqrt((areaScale(k.gestation_mo))/(2*Math.PI)); }) // area -> radius
+                .attr("cx", function(k) { return xScale(k.mass_g); })
+                .attr("cy", function(k) { return yScale(k.newborn_g); })
+                .style("fill", function(k, i) { return colorScale(k.family);})
+                .attr("class", "circle")
+                .append("svg:title")
+                .text(function(k) { return k.taxonName; });
+    };
+
+    var dataset = {{ data | safe }};
+    var orderList = {{ orderList | safe }}
+
+
+    console.log(orderList);
+    var i = 0;
+    svg.on('click', function(){
+        drawBubbles(dataset.filter(function(d) {
+            return d.ordered == orderList[i++ % orderList.length]
+        }), svg);
+    });
+
+
+</script>
+{% endblock %}
